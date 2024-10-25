@@ -16,11 +16,14 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
         filename: "bundle.js"
     },
-    // <!-- 告诉webpack要处理哪些文件 -->
+    // resolve用来配置webpack如何寻找模块的路径
     resolve: {
-        extensions: [".ts", ".js", ".json", ".cjs"]
+        // 自动补充路径中的文件的后缀名，比如require("module")会自动补充为require("module.ts")，import "module"会自动补充为import "module.ts"
+        extensions: [".ts", ".js", ".json", ".cjs"],
+        // 配置别名，可以方便的引用模块
+        alias: {"@": path.resolve(__dirname, "src")}
     },
-    // <!-- 告诉webpack处理对应文件时使用什么loader -->
+    // <!-- 告诉webpack处理依赖图中的文件时使用什么loader来解析文件 -->
     module: {
         rules: [
             {
