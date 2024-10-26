@@ -1,5 +1,5 @@
 <template>
-  <div class="home">home</div>
+  <div class="main">main</div>
 </template>
 
 <script setup lang="ts">
@@ -14,7 +14,7 @@ wdRequest
 </script>
 
 <style lang="less" scoped>
-.home {
+.main {
   color: red;
 }
 </style>

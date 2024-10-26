@@ -1,20 +1,26 @@
 <template>
   <div class="login">
-    <div class="mb-4">
-      <el-button>Default</el-button>
-      <el-button type="primary">Primary</el-button>
-      <el-button type="success">Success</el-button>
-      <el-button type="info">Info</el-button>
-      <el-button type="warning">Warning</el-button>
-      <el-button type="danger">Danger</el-button>
+    <div class="panel">
+      <login-panel></login-panel>
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import LoginPanel from './cpns/login-panel.vue'
+</script>
 
 <style lang="less" scoped>
 .login {
-  color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: url(@/assets/img/login-bg.svg);
+
+  .panel {
+    margin-top: -100px;
+  }
 }
 </style>

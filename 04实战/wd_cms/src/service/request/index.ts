@@ -11,21 +11,21 @@ class WDRequest {
     // 添加全局请求拦截器
     this.instance.interceptors.request.use(
       config => {
-        console.log('全局请求拦截器🔼')
+        // console.log('全局请求拦截器🔼')
         return config
       },
       error => {
-        console.log('全局请求拦截器错误', error)
+        // console.log('全局请求拦截器错误', error)
         return error
       }
     )
     this.instance.interceptors.response.use(
       response => {
-        console.log('全局响应拦截器🔽')
+        // console.log('全局响应拦截器🔽')
         return response.data
       },
       error => {
-        console.log('全局响应拦截器错误', error)
+        // console.log('全局响应拦截器错误', error)
         return error
       }
     )

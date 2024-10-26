@@ -1,14 +1,13 @@
 <template>
-  <div class="app">
-    <router-view />
+  <div class="notfound">
+    <span>请输入正确的网址</span>
   </div>
 </template>
 
 <script setup lang="ts"></script>
 
 <style lang="less" scoped>
-.app {
-  width: 100vw;
-  height: 100vh;
+.notfound {
+  color: red;
 }
 </style>
