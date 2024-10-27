@@ -13,7 +13,9 @@ class StorageCache {
   }
 
   set(key: string, value: any) {
-    this.storage.setItem(key, JSON.stringify(value))
+    if (value) {
+      this.storage.setItem(key, JSON.stringify(value))
+    }
   }
 
   get(key: string) {

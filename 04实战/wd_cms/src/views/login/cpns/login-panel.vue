@@ -38,18 +38,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import loginPanelAccount from './login-panel-account.vue'
 import loginPanelPhone from './login-panel-phone.vue'
+import { localCache } from '@/utils/cache'
+import { KEEP_PWD } from '@/constants/login'
 const currentTab = ref('account')
-const keep_pwd = ref(false)
+const keep_pwd = ref<boolean>(localCache.get(KEEP_PWD))
+
+watch(keep_pwd, () => {
+  localCache.set(KEEP_PWD, keep_pwd.value)
+})
 
 // 获取组件实例
 const account_login_cpn = ref<InstanceType<typeof loginPanelAccount>>()
 function handleLogin() {
   if (currentTab.value === 'account') {
     console.log('账号登录')
-    account_login_cpn.value?.loginAction()
+    account_login_cpn.value?.loginAction(keep_pwd.value)
   } else if (currentTab.value === 'phone') {
     console.log('手机号登录')
   }

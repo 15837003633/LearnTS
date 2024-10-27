@@ -1,0 +1,6 @@
+export const LOGIN_TOKEN = 'LOGIN_TOKEN'
+export const KEEP_PWD = 'KEEP_PWD'
+export const LAST_LOGIN_ACCOUNT = 'LAST_LOGIN_ACCOUNT'
+export const LAST_LOGIN_PWD = 'LAST_LOGIN_PWD'
+export const USER_INFO = 'USER_INFO'
+export const USER_MENU = 'USER_MENU'

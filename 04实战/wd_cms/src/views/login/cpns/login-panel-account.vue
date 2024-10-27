@@ -17,9 +17,11 @@
 import { ref, reactive } from 'vue'
 import { ElMessage, type FormInstance } from 'element-plus'
 import { useLoginStore } from '@/store/login'
+import { localCache } from '@/utils/cache'
+import { LAST_LOGIN_ACCOUNT, LAST_LOGIN_PWD } from '@/constants/login'
 const form = reactive({
-  name: '',
-  password: ''
+  name: localCache.get(LAST_LOGIN_ACCOUNT),
+  password: localCache.get(LAST_LOGIN_PWD)
 })
 
 const rules = reactive({
@@ -32,16 +34,23 @@ const rules = reactive({
 
 const formRef = ref<FormInstance>()
 
-function loginAction() {
+async function loginAction(keep_pwd: boolean) {
   // 获取表单实例的验证结果
-  formRef.value?.validate(validate => {
+  formRef.value?.validate(async validate => {
     if (validate) {
       console.log('验证通过')
       const loginStore = useLoginStore()
-      loginStore.fetchAccountLogin({
+      await loginStore.fetchAccountLogin({
         name: form.name,
         password: form.password
       })
+      if (keep_pwd) {
+        localCache.set(LAST_LOGIN_PWD, form.password)
+        localCache.set(LAST_LOGIN_ACCOUNT, form.name)
+      } else {
+        localCache.remove(LAST_LOGIN_PWD)
+        localCache.remove(LAST_LOGIN_ACCOUNT)
+      }
     } else {
       console.log('验证失败')
       ElMessage.error('账号或密码格式错误')
