@@ -6,11 +6,7 @@
       </el-icon>
     </span>
     <div class="bread">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>首页</el-breadcrumb-item>
-        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-        <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-      </el-breadcrumb>
+      <head-bread></head-bread>
     </div>
     <div class="info"><head-info></head-info></div>
   </div>
@@ -19,6 +15,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import headInfo from './cpns/head-info.vue'
+import headBread from './cpns/head-bread.vue'
 const emits = defineEmits(['onCollapse'])
 const isCollapsed = ref(false)
 function onCollapesClick() {

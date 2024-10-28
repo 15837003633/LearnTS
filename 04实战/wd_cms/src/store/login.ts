@@ -3,22 +3,18 @@ import router from '@/router'
 import { accountLoginRequest, userInfoRequest, userMenuListRequest } from '@/service/login'
 import type { IAccount } from '@/type'
 import { localCache } from '@/utils/cache'
+import { mapRouteFromMenu } from '@/utils/map-route'
 import { defineStore } from 'pinia'
 
 export const useLoginStore = defineStore('login', {
   state: () => ({
-    token: localCache.get(LOGIN_TOKEN),
-    userInfo: localCache.get(USER_INFO) ?? {},
-    menuList: localCache.get(USER_MENU) ?? []
+    token: null,
+    userInfo: {},
+    menuList: [] as any[]
   }),
   getters: {
     /**
      * 判断用户是否已登录
-     *
-     * 此方法通过检查用户令牌（token）是否存在来确定用户登录状态
-     * 如果token存在，则返回true，表示用户已登录；否则返回false，表示用户未登录
-     *
-     * @returns {boolean} 用户登录状态，true表示已登录，false表示未登录
      */
     isLogin(): boolean {
       return !!this.token
@@ -40,14 +36,39 @@ export const useLoginStore = defineStore('login', {
       localCache.set(USER_INFO, this.userInfo)
 
       // 获取用户管理权限，也就是显示的menu
-      const menu = await userMenuListRequest(uid)
-      this.menuList = menu.data
+      const all_menu_res = await userMenuListRequest(uid)
+      this.menuList = all_menu_res.data
       localCache.set(USER_MENU, this.menuList)
+
+      // 动态添加路由
+
+      const routes = mapRouteFromMenu(this.menuList)
+      for (const item of routes) {
+        router.addRoute('main', item)
+      }
 
       router.push('/main')
     },
+
+    // 当用户刷新网页时，需要重新加载的数据
+    loadDataFromCache() {
+      console.log('load data from cache')
+      this.token = localCache.get(LOGIN_TOKEN)
+      this.userInfo = localCache.get(USER_INFO)
+      this.menuList = localCache.get(USER_MENU)
+      if (this.token && this.userInfo && this.menuList) {
+        const routes = mapRouteFromMenu(this.menuList)
+        for (const item of routes) {
+          router.addRoute('main', item)
+        }
+      }
+    },
+
+    // 退出登录，清空缓存数据
     logout() {
       localCache.remove(LOGIN_TOKEN)
+      localCache.remove(USER_INFO)
+      localCache.remove(USER_MENU)
       router.push('/login')
     }
   }

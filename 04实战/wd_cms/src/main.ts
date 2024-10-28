@@ -1,14 +1,14 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import { createPinia } from 'pinia'
+
 import 'element-plus/dist/index.css'
 import '@/assets/css/index.css'
-import registerIcons from '@/global/register-icons'
+import icons from '@/global/register-icons'
+import store from '@/store'
 
-const pinia = createPinia()
 const app = createApp(App)
-app.use(pinia)
-app.use(registerIcons)
+app.use(store)
+app.use(icons)
 app.use(router)
 app.mount('#app')

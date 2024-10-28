@@ -9,6 +9,7 @@
       text-color="#b7bdc3"
       active-text-color="#ffffff"
       :collapse="isCollapse"
+      :defaultActive="defaultActive"
     >
       <template v-for="sub_menu in menu" :key="sub_menu.id">
         <el-sub-menu :index="String(sub_menu.id)">
@@ -19,7 +20,9 @@
             <span>{{ sub_menu.name }}</span>
           </template>
           <template v-for="item in sub_menu.children" :key="item.id">
-            <el-menu-item :index="String(item.id)">{{ item.name }}</el-menu-item>
+            <el-menu-item :index="String(item.id)" @click="onMenuItemClick(item)">{{
+              item.name
+            }}</el-menu-item>
           </template>
         </el-sub-menu>
       </template>
@@ -29,6 +32,9 @@
 
 <script setup lang="ts">
 import { useLoginStore } from '@/store/login'
+import { mapMenuFromRoute } from '@/utils/map-route'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 defineProps({
   isCollapse: {
     type: Boolean,
@@ -38,6 +44,20 @@ defineProps({
 
 const loginStore = useLoginStore()
 const menu = loginStore.menuList
+
+const router = useRouter()
+function onMenuItemClick(item: any) {
+  router.push(item.url)
+}
+
+const route = useRoute()
+
+// 根据当前的路由匹配到对应的menu，用于匹配menu的选中状态
+const defaultActive = computed(() => {
+  const m = mapMenuFromRoute(menu, route.path)
+  //转为string
+  return m?.id + ''
+})
 </script>
 
 <style lang="less" scoped>
