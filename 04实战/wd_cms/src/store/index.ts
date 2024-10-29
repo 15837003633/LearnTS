@@ -1,6 +1,6 @@
 import type { App } from 'vue'
 import { createPinia } from 'pinia'
-import { useLoginStore } from '@/store/login'
+import { useLoginStore } from '@/store/login/login'
 
 // pinia的初始化
 const pinia = createPinia()

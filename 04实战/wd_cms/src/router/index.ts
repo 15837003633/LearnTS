@@ -1,4 +1,4 @@
-import { useLoginStore } from '@/store/login'
+import { useLoginStore } from '@/store/login/login'
 import { first_main_route } from '@/utils/map-route'
 import { createRouter, createWebHashHistory } from 'vue-router'
 

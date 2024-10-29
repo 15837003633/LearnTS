@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { ElMessage, type FormInstance } from 'element-plus'
-import { useLoginStore } from '@/store/login'
+import { useLoginStore } from '@/store/login/login'
 import { localCache } from '@/utils/cache'
 import { LAST_LOGIN_ACCOUNT, LAST_LOGIN_PWD } from '@/constants/login'
 const form = reactive({

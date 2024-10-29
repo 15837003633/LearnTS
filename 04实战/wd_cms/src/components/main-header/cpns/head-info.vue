@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { useLoginStore } from '@/store/login'
+import { useLoginStore } from '@/store/login/login'
 
 const loginStore = useLoginStore()
 function logout() {

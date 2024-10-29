@@ -39,7 +39,7 @@ function handleCollapse(flag: boolean) {
   }
 
   .el-main {
-    background-color: blueviolet;
+    background-color: #fafafa;
   }
 }
 
