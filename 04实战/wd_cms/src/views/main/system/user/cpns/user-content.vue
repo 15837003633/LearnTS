@@ -11,18 +11,56 @@
         <el-table-column prop="name" label="用户名" width="160" />
         <el-table-column prop="realname" label="真实姓名" width="160" />
         <el-table-column prop="cellphone" label="手机号码" width="160" />
-        <el-table-column prop="enable" label="状态" align="center" width="60" />
-        <el-table-column prop="createAt" label="创建时间" align="center"> </el-table-column>
-        <el-table-column prop="updateAt" label="更新时间" align="center"> </el-table-column>
+        <el-table-column label="状态" align="center" width="100">
+          <!-- 作用域插槽 -->
+          <template #default="scope">
+            <el-button v-if="scope.row.enable === 1" type="success" size="small" text
+              >启用</el-button
+            >
+            <el-button v-else type="info" size="small" text>禁用</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center">
+          <template #default="scope">
+            {{ formatUTCDate(scope.row.createAt) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="更新时间" align="center">
+          <template #default="scope">
+            {{ formatUTCDate(scope.row.updateAt) }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" width="160">
-          <div class="opration">
-            <el-button icon="Edit" type="primary" size="small" text>编辑</el-button>
-            <el-button icon="Delete" type="danger" size="small" text>删除</el-button>
-          </div>
+          <template #default="scope">
+            <div class="opration">
+              <el-button icon="Edit" type="primary" size="small" text @click="updateUser(scope.row)"
+                >编辑</el-button
+              >
+              <el-button
+                icon="Delete"
+                type="danger"
+                size="small"
+                text
+                @click="deleteUser(scope.row.id)"
+                >删除</el-button
+              >
+            </div>
+          </template>
         </el-table-column>
       </el-table>
     </div>
-    <div class="foot">foot</div>
+    <div class="foot">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 20, 30]"
+        size="large"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="totalCount"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -30,6 +68,10 @@
 // import { reactive } from 'vue'
 import useSystemStore from '@/store/main/system/system'
 import { storeToRefs } from 'pinia'
+import { formatUTCDate } from '@/utils/format'
+import { ref } from 'vue'
+
+const emits = defineEmits(['newUser', 'updateUser'])
 
 const userStore = useSystemStore()
 /*
@@ -51,7 +93,65 @@ const userList = storeToRefs(userStore).userList
 
 const { userList } = storeToRefs(userStore)
 
-function addUser() {}
+// pagination 分页器
+const currentPage = ref(1)
+const pageSize = ref(10)
+const { totalCount } = storeToRefs(userStore)
+
+//记录查询条件
+let queryInfo: any = null
+
+// 进入页面先获取一次数据
+requestUserList()
+// *******************************查询********************************
+// 分页器的回调函数
+function handleSizeChange() {
+  requestUserList()
+}
+// 页数改变
+function handleCurrentChange() {
+  requestUserList()
+}
+// 重置查询
+function handleResetSearch() {
+  queryInfo = null
+  currentPage.value = 1
+  requestUserList()
+}
+// 条件查询
+function handleQuerySearch(qInfo: any) {
+  currentPage.value = 1
+  queryInfo = qInfo
+  requestUserList()
+}
+// 根据当前页面状态，查询数据
+function requestUserList() {
+  const offset = (currentPage.value - 1) * pageSize.value
+  const size = pageSize.value
+  const pageInfo = { offset, size }
+  userStore.fetchUserList({ ...pageInfo, ...queryInfo })
+}
+
+// *******************************删除********************************
+async function deleteUser(uid: number) {
+  console.log('删除 uid:', uid)
+  await userStore.deleteUserById(uid)
+}
+// *******************************新增********************************
+function addUser() {
+  emits('newUser')
+}
+// *******************************更新********************************
+function updateUser(userInfo: any) {
+  emits('updateUser', userInfo)
+}
+
+// 暴露方法
+defineExpose({
+  requestUserList,
+  handleResetSearch,
+  handleQuerySearch
+})
 </script>
 
 <style lang="less" scoped>
@@ -74,6 +174,12 @@ function addUser() {}
         padding: 10px 5px;
       }
     }
+  }
+
+  .foot {
+    display: flex;
+    justify-content: end;
+    padding: 20px 0;
   }
 }
 

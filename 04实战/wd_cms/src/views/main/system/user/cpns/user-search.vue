@@ -29,7 +29,7 @@
         <el-col :span="8">
           <el-form-item prop="date" label="创建时间" size="large">
             <el-date-picker
-              v-model="formData.date"
+              v-model="formData.createAt"
               type="daterange"
               range-separator="到"
               start-placeholder="开始时间"
@@ -50,14 +50,14 @@
 import { reactive, ref } from 'vue'
 import { ElForm } from 'element-plus'
 
+const emits = defineEmits(['resetAction', 'queryAction'])
+
 const formData = reactive({
   name: '',
   realname: '',
   cellphone: '',
   enable: 1,
-  date: [] as any[]
-  // tcreateA: '',
-  // updateAt: ''
+  createAt: ''
 })
 
 const formRef = ref<InstanceType<typeof ElForm>>()
@@ -72,9 +72,14 @@ function resetForm() {
   // 方法2：使用form组件的expose
   // 需要设置FormItem的prop属性来找到需要重置的表单
   formRef.value?.resetFields()
+
+  emits('resetAction')
 }
 
-function onSubmit() {}
+function onSubmit() {
+  console.log('submit!', formData)
+  emits('queryAction', formData)
+}
 </script>
 
 <style lang="less" scoped>

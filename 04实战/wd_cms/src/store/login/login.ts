@@ -5,6 +5,7 @@ import type { IAccount } from '@/type'
 import { localCache } from '@/utils/cache'
 import { mapRouteFromMenu } from '@/utils/map-route'
 import { defineStore } from 'pinia'
+import useMainStore from '../main/main'
 
 export const useLoginStore = defineStore('login', {
   state: () => ({
@@ -41,11 +42,14 @@ export const useLoginStore = defineStore('login', {
       localCache.set(USER_MENU, this.menuList)
 
       // 动态添加路由
-
       const routes = mapRouteFromMenu(this.menuList)
       for (const item of routes) {
         router.addRoute('main', item)
       }
+
+      //获取一些公共的数据
+      const mainStore = useMainStore()
+      mainStore.getEntireData()
 
       router.push('/main')
     },
@@ -57,10 +61,14 @@ export const useLoginStore = defineStore('login', {
       this.userInfo = localCache.get(USER_INFO)
       this.menuList = localCache.get(USER_MENU)
       if (this.token && this.userInfo && this.menuList) {
+        //路由
         const routes = mapRouteFromMenu(this.menuList)
         for (const item of routes) {
           router.addRoute('main', item)
         }
+        //请求数据
+        const mainStore = useMainStore()
+        mainStore.getEntireData()
       }
     },
 
