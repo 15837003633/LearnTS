@@ -1,11 +1,6 @@
 <template>
   <div class="department">
-    <page-search
-      :form-items="searchConfig.formItems"
-      label-width="80"
-      @query-action="searchQueryAction"
-      @reset-action="searchResetAction"
-    ></page-search>
+    <page-search @query-action="searchQueryAction" @reset-action="searchResetAction"></page-search>
     <page-content
       ref="contentRef"
       @new-user="newUserAction"
@@ -17,9 +12,8 @@
 
 <script setup lang="ts">
 import pageContent from './cpns/page-content.vue'
-import pageSearch from '@/components/page-search/page-search.vue'
+import pageSearch from './cpns/page-search.vue'
 import pageModal from './cpns/page-modal.vue'
-import { searchConfig } from './config'
 
 import { ref } from 'vue'
 

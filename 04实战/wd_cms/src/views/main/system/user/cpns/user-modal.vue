@@ -3,7 +3,7 @@
     <el-dialog
       v-model="dialogVisible"
       :title="isNewModal ? '新建用户' : '编辑用户'"
-      width="35%"
+      width="30%"
       center
     >
       <el-form :model="form" label-width="80px">

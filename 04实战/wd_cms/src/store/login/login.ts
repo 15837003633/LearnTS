@@ -10,7 +10,7 @@ import useMainStore from '../main/main'
 export const useLoginStore = defineStore('login', {
   state: () => ({
     token: null,
-    userInfo: {},
+    userInfo: {} as any,
     menuList: [] as any[]
   }),
   getters: {
