@@ -1,4 +1,4 @@
-export const searchConfig = {
+const searchConfig = {
   formItems: [
     {
       type: 'input',
@@ -14,17 +14,6 @@ export const searchConfig = {
       prop: 'leader',
       initialValue: ''
     },
-    // {
-    //   type: 'select',
-    //   label: '上级部门',
-    //   placeHolder: '请选择上级部门',
-    //   prop: 'parentId',
-    //   initialValue: '',
-    //   options: [
-    //     { label: '研发部', value: '1' },
-    //     { label: '销售部', value: '2' }
-    //   ]
-    // },
     {
       type: 'date',
       label: '创建时间',
@@ -33,3 +22,5 @@ export const searchConfig = {
     }
   ]
 }
+
+export default searchConfig

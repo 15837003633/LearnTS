@@ -7,39 +7,41 @@
       @reset-action="searchResetAction"
     ></page-search>
     <page-content
+      :content-config="contentConfig"
       ref="contentRef"
-      @new-user="newUserAction"
-      @update-user="updateUserAction"
+      @new-data="newDataAction"
+      @update-data="updateDataAction"
     ></page-content>
-    <page-modal ref="modalRef"></page-modal>
+    <page-modal ref="modalRef" :modal-config="modalConfig"></page-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import pageContent from './cpns/page-content.vue'
+import { computed } from 'vue'
+import pageContent from '@/components/page-content/page-content.vue'
 import pageSearch from '@/components/page-search/page-search.vue'
-import pageModal from './cpns/page-modal.vue'
-import { searchConfig } from './config'
+import pageModal from '@/components/page-modal/page-modal.vue'
+import searchConfig from './config/search.config'
+import contentConfig from './config/content.config'
+import defaultModalConfig from './config/modal.config'
+import useMainStore from '@/store/main/main'
+import usePageContent from '@/hooks/usePageContent'
+import usePageModal from '@/hooks/usePageModal'
 
-import { ref } from 'vue'
+const mainStore = useMainStore()
 
-const contentRef = ref<InstanceType<typeof pageContent>>()
+const modalConfig = computed(() => {
+  defaultModalConfig.formItems.forEach(item => {
+    if (item.prop == 'parentId') {
+      item.options?.push(...mainStore.entireDepartments)
+    }
+  })
+  return defaultModalConfig
+})
 
-function searchResetAction() {
-  contentRef.value?.handleResetSearch()
-}
-function searchQueryAction(queryInfo: any) {
-  contentRef.value?.handleQuerySearch(queryInfo)
-}
-
-const modalRef = ref<InstanceType<typeof pageModal>>()
-function newUserAction() {
-  modalRef.value?.setDialogVisible()
-}
-
-function updateUserAction(userInfo: any) {
-  modalRef.value?.setDialogVisible(false, userInfo)
-}
+// hooks抽取逻辑
+const { contentRef, searchResetAction, searchQueryAction } = usePageContent()
+const { modalRef, newDataAction, updateDataAction } = usePageModal()
 </script>
 
 <style lang="less" scoped></style>
