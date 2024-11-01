@@ -19,7 +19,7 @@
           <!-- 日期 -->
           <el-table-column v-else-if="item.type == 'date'" v-bind="item">
             <template #default="scope">
-              {{ formatUTCDate(scope.row.createAt) }}
+              {{ formatUTCDate(scope.row[item.prop]) }}
             </template>
           </el-table-column>
           <!-- 操作 -->
