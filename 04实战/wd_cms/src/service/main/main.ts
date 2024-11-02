@@ -11,3 +11,9 @@ export function entireDepartmentsRequest() {
     url: '/department/list'
   })
 }
+
+export function entireMenuListRequest() {
+  return wdRequest.post({
+    url: '/menu/list'
+  })
+}

@@ -19,6 +19,9 @@
                 </template>
               </el-select>
             </template>
+            <template v-else-if="item.type === 'custom'">
+              <slot :name="item.slotName">自定义默认内容</slot>
+            </template>
           </el-form-item>
         </template>
       </el-form>
@@ -45,6 +48,7 @@ export interface IProps {
     }
     formItems: any[]
   }
+  extraInfo?: any
 }
 // 使用泛型的方式定义属性
 const props = defineProps<IProps>()
@@ -62,10 +66,18 @@ props.modalConfig.formItems.forEach(item => {
 async function onConfirm() {
   console.log('form:', form)
   const useStore = useSystemStore()
+  let requestData = form
+  if (props.extraInfo) {
+    requestData = { ...requestData, ...props.extraInfo }
+  }
   if (!isNewModal.value) {
-    await useStore.updatePageDataRequest(props.modalConfig.pageName, editPageInfo.value.id, form)
+    await useStore.updatePageDataRequest(
+      props.modalConfig.pageName,
+      editPageInfo.value.id,
+      requestData
+    )
   } else {
-    await useStore.newPageDataRequest(props.modalConfig.pageName, form)
+    await useStore.newPageDataRequest(props.modalConfig.pageName, requestData)
   }
   dialogVisible.value = false
 }

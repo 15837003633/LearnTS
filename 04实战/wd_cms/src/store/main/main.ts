@@ -1,11 +1,19 @@
 import { defineStore } from 'pinia'
-import { entireRolesRequest, entireDepartmentsRequest } from '@/service/main/main'
+import {
+  entireRolesRequest,
+  entireDepartmentsRequest,
+  entireMenuListRequest
+} from '@/service/main/main'
 
 const useMainStore = defineStore('main', {
   state: () => {
     return {
+      //所有角色列表
       entireRools: [] as any[],
-      entireDepartments: [] as any[]
+      // 所有部门列表
+      entireDepartments: [] as any[],
+      // 所有菜单列表,也就是所有权限列表
+      menuList: [] as any[]
     }
   },
   actions: {
@@ -15,6 +23,9 @@ const useMainStore = defineStore('main', {
 
       const departmentsRes = await entireDepartmentsRequest()
       this.entireDepartments = departmentsRes.data.list
+
+      const menuList = await entireMenuListRequest()
+      this.menuList = menuList.data.list
     }
   }
 })
