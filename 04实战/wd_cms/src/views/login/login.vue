@@ -1,8 +1,7 @@
 <template>
   <div class="login">
-    <div class="panel">
-      <login-panel></login-panel>
-    </div>
+    <login-panel></login-panel>
+    <span class="tips">账号:coderwhy 密码:123456</span>
   </div>
 </template>
 
@@ -12,6 +11,7 @@ import LoginPanel from './cpns/login-panel.vue'
 
 <style lang="less" scoped>
 .login {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,8 +19,15 @@ import LoginPanel from './cpns/login-panel.vue'
   height: 100%;
   background: url(@/assets/img/login-bg.svg);
 
-  .panel {
+  .login-panel {
     margin-top: -100px;
+  }
+  .tips {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #aaa;
+    font-size: 10px;
   }
 }
 </style>
