@@ -10,6 +10,7 @@ import {
 } from '@/service/main/system/system'
 import { defineStore } from 'pinia'
 import type { IUser } from './type'
+import useMainStore from '../main'
 
 const useSystemStore = defineStore('system', {
   state: () => {
@@ -50,14 +51,25 @@ const useSystemStore = defineStore('system', {
     async deletePageById(pageName: string, id: number) {
       await deletePageById(pageName, id)
       await this.fetchPageList(pageName, { offset: 0, size: 10 })
+
+      //重新获取完整数据
+      const mainStore = useMainStore()
+      mainStore.getEntireData()
     },
     async newPageDataRequest(pageName: string, userInfo: any) {
       await newPageDataRequest(pageName, userInfo)
       await this.fetchPageList(pageName, { offset: 0, size: 10 })
+
+      //重新获取完整数据
+      const mainStore = useMainStore()
+      mainStore.getEntireData()
     },
     async updatePageDataRequest(pageName: string, uid: number, userInfo: any) {
       await updatePageDataRequest(pageName, uid, userInfo)
       await this.fetchPageList(pageName, { offset: 0, size: 10 })
+      //重新获取完整数据
+      const mainStore = useMainStore()
+      mainStore.getEntireData()
     }
   }
 })

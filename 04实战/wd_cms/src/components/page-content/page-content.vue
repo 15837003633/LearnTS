@@ -2,10 +2,12 @@
   <div class="content">
     <div class="head">
       <h2>{{ contentConfig.header.title }}</h2>
-      <el-button type="primary" @click="addData">{{ contentConfig.header.btn }}</el-button>
+      <el-button v-if="canCreate && contentConfig.header.btn" type="primary" @click="addData">{{
+        contentConfig.header.btn
+      }}</el-button>
     </div>
     <div class="table">
-      <el-table :data="pageList" border>
+      <el-table :data="pageList" border v-bind="contentConfig.childrenTree">
         <template v-for="item in contentConfig.props" :key="item.prop">
           <!-- 选择 -->
           <el-table-column v-if="item.type === 'selection'" v-bind="item"></el-table-column>
@@ -27,6 +29,7 @@
             <template #default="scope">
               <div class="opration">
                 <el-button
+                  v-if="canUpdate"
                   icon="Edit"
                   type="primary"
                   size="small"
@@ -35,6 +38,7 @@
                   >编辑</el-button
                 >
                 <el-button
+                  v-if="canDelete"
                   icon="Delete"
                   type="danger"
                   size="small"
@@ -70,15 +74,17 @@ import useSystemStore from '@/store/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTCDate } from '@/utils/format'
 import { ref } from 'vue'
+import usePermission from '@/hooks/userPermission'
 
 export interface IProps {
   contentConfig: {
     pageName: string
     header: {
       title: string
-      btn: string
+      btn?: string
     }
     props: any[]
+    childrenTree?: any
   }
 }
 
@@ -90,10 +96,29 @@ const pageStore = useSystemStore()
 
 const { pageList } = storeToRefs(pageStore)
 
+//crud权限
+const canCreate = usePermission(props.contentConfig.pageName + ':create')
+const canUpdate = usePermission(props.contentConfig.pageName + ':update')
+const canDelete = usePermission(props.contentConfig.pageName + ':delete')
+const canQuery = usePermission(props.contentConfig.pageName + ':query')
+
 // pagination 分页器
 const currentPage = ref(1)
 const pageSize = ref(10)
 const { pageTotalCount } = storeToRefs(pageStore)
+
+// 监听store的action方法调用完成，分页器重置到第一页
+pageStore.$onAction(({ name, after }) => {
+  after(() => {
+    if (
+      name === 'deletePageById' ||
+      name === 'newPageDataRequest' ||
+      name === 'updatePageDataRequest'
+    ) {
+      currentPage.value = 1
+    }
+  })
+})
 
 //记录查询条件
 let queryInfo: any = null
@@ -112,7 +137,6 @@ function handleCurrentChange() {
 // 重置查询
 function handleResetSearch() {
   queryInfo = null
-  currentPage.value = 1
   requestPageList()
 }
 // 条件查询
@@ -123,6 +147,10 @@ function handleQuerySearch(qInfo: any) {
 }
 // 根据当前页面状态，查询数据
 function requestPageList() {
+  if (!canQuery) {
+    //没有查询权限
+    return
+  }
   const offset = (currentPage.value - 1) * pageSize.value
   const size = pageSize.value
   const pageInfo = { offset, size }

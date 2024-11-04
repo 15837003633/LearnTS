@@ -2,7 +2,7 @@
   <div class="content">
     <div class="head">
       <h2>用户列表</h2>
-      <el-button type="primary" @click="addUser">添加用户</el-button>
+      <el-button v-if="canCreate" type="primary" @click="addUser">添加用户</el-button>
     </div>
     <div class="table">
       <el-table :data="userList" border>
@@ -33,10 +33,17 @@
         <el-table-column label="操作" align="center" width="160">
           <template #default="scope">
             <div class="opration">
-              <el-button icon="Edit" type="primary" size="small" text @click="updateUser(scope.row)"
+              <el-button
+                v-if="canUpdate"
+                icon="Edit"
+                type="primary"
+                size="small"
+                text
+                @click="updateUser(scope.row)"
                 >编辑</el-button
               >
               <el-button
+                v-if="canDelete"
                 icon="Delete"
                 type="danger"
                 size="small"
@@ -70,6 +77,7 @@ import useSystemStore from '@/store/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTCDate } from '@/utils/format'
 import { ref } from 'vue'
+import usePermission from '@/hooks/userPermission'
 
 const emits = defineEmits(['newUser', 'updateUser'])
 
@@ -93,10 +101,28 @@ const userList = storeToRefs(userStore).userList
 
 const { userList } = storeToRefs(userStore)
 
+const canCreate = usePermission('users:create')
+const canUpdate = usePermission('users:update')
+const canDelete = usePermission('users:delete')
+const canQuery = usePermission('users:query')
+
 // pagination 分页器
 const currentPage = ref(1)
 const pageSize = ref(10)
 const { totalCount } = storeToRefs(userStore)
+
+// 监听store的action方法调用完成，分页器重置到第一页
+userStore.$onAction(({ name, after }) => {
+  after(() => {
+    if (
+      name === 'deleteUserById' ||
+      name === 'newUserDataRequest' ||
+      name === 'updateUserDataRequest'
+    ) {
+      currentPage.value = 1
+    }
+  })
+})
 
 //记录查询条件
 let queryInfo: any = null
@@ -126,6 +152,7 @@ function handleQuerySearch(qInfo: any) {
 }
 // 根据当前页面状态，查询数据
 function requestUserList() {
+  if (!canQuery) return
   const offset = (currentPage.value - 1) * pageSize.value
   const size = pageSize.value
   const pageInfo = { offset, size }

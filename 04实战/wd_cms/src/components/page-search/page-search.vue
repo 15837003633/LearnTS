@@ -1,9 +1,9 @@
 <template>
-  <div class="search">
+  <div class="search" v-if="canQuery">
     <el-form ref="formRef" :model="formData" :label-width="`${labelWidth ?? 80}px`">
       <!-- el-row 一行是24份，col设置为8代表一行三个 -->
       <el-row :gutter="20">
-        <template v-for="item in props.formItems" :key="item.prop">
+        <template v-for="item in props.searchConfig.formItems" :key="item.prop">
           <el-col :span="8">
             <el-form-item :prop="item.prop" :label="item.label" size="large">
               <el-input
@@ -47,10 +47,14 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ElForm } from 'element-plus'
+import usePermission from '@/hooks/userPermission'
 
 interface IProps {
   labelWidth?: string
-  formItems: any[]
+  searchConfig: {
+    pageName: string
+    formItems: any[]
+  }
 }
 
 const emits = defineEmits(['resetAction', 'queryAction'])
@@ -59,11 +63,13 @@ const props = defineProps<IProps>()
 
 // 根据配置，初始化表单数据
 const formData = reactive<any>({})
-for (const item of props.formItems) {
+for (const item of props.searchConfig.formItems) {
   formData[item.prop] = item.initialValue ?? ''
 }
 
 const formRef = ref<InstanceType<typeof ElForm>>()
+
+const canQuery = usePermission(props.searchConfig.pageName + ':query')
 function resetForm() {
   formRef.value?.resetFields()
   emits('resetAction')

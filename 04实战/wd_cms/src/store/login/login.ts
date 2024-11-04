@@ -6,12 +6,14 @@ import { localCache } from '@/utils/cache'
 import { mapRouteFromMenu } from '@/utils/map-route'
 import { defineStore } from 'pinia'
 import useMainStore from '../main/main'
+import { mapMenuListToPermissions } from '@/utils/map-role'
 
 export const useLoginStore = defineStore('login', {
   state: () => ({
     token: null,
     userInfo: {} as any,
-    menuList: [] as any[]
+    menuList: [] as any[],
+    userPermissionList: [] as string[]
   }),
   getters: {
     /**
@@ -36,10 +38,13 @@ export const useLoginStore = defineStore('login', {
       this.userInfo = user_info.data
       localCache.set(USER_INFO, this.userInfo)
 
-      // 获取用户管理权限，也就是显示的menu
+      // 获取用户显示的menu
       const all_menu_res = await userMenuListRequest(uid)
-      this.menuList = all_menu_res.data
+      this.menuList = all_menu_res.data ?? []
       localCache.set(USER_MENU, this.menuList)
+
+      // 获取用户的menu里权限
+      this.userPermissionList = mapMenuListToPermissions(this.menuList)
 
       // 动态添加路由
       const routes = mapRouteFromMenu(this.menuList)
@@ -69,6 +74,9 @@ export const useLoginStore = defineStore('login', {
         //请求数据
         const mainStore = useMainStore()
         mainStore.getEntireData()
+
+        //获取权限
+        this.userPermissionList = mapMenuListToPermissions(this.menuList)
       }
     },
 

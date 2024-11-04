@@ -18,13 +18,13 @@ const useMainStore = defineStore('main', {
   },
   actions: {
     async getEntireData() {
-      const roolsRes = await entireRolesRequest()
+      const roolsRes = await entireRolesRequest({ offset: 0, size: 100 })
       this.entireRools = roolsRes.data.list
 
-      const departmentsRes = await entireDepartmentsRequest()
+      const departmentsRes = await entireDepartmentsRequest({ offset: 0, size: 100 })
       this.entireDepartments = departmentsRes.data.list
 
-      const menuList = await entireMenuListRequest()
+      const menuList = await entireMenuListRequest({ offset: 0, size: 100 })
       this.menuList = menuList.data.list
     }
   }

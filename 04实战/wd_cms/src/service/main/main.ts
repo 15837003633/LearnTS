@@ -1,19 +1,22 @@
 import wdRequest from '@/service'
 
-export function entireRolesRequest() {
+export function entireRolesRequest(data?: any) {
   return wdRequest.post({
-    url: '/role/list'
+    url: '/role/list',
+    data
   })
 }
 
-export function entireDepartmentsRequest() {
+export function entireDepartmentsRequest(data?: any) {
   return wdRequest.post({
-    url: '/department/list'
+    url: '/department/list',
+    data
   })
 }
 
-export function entireMenuListRequest() {
+export function entireMenuListRequest(data?: any) {
   return wdRequest.post({
-    url: '/menu/list'
+    url: '/menu/list',
+    data
   })
 }

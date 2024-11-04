@@ -1,7 +1,7 @@
 <template>
   <div class="role">
     <page-search
-      :form-items="searchConfig.formItems"
+      :search-config="searchConfig"
       label-width="80"
       @query-action="searchQueryAction"
       @reset-action="searchResetAction"
@@ -55,13 +55,23 @@ function onTreeChecked(chickedObj: any, allCheckedObj: any) {
 
 // hooks抽取逻辑
 const { contentRef, searchResetAction, searchQueryAction } = usePageContent()
-const { modalRef, newDataAction, updateDataAction } = usePageModal(userInfo => {
+const { modalRef, newDataAction, updateDataAction } = usePageModal(newCallBack, updateCallBack)
+
+// 新增弹窗的拦截，清空回显tree
+function newCallBack() {
+  // nextTick在vue中的意思是：当dom更新后，再执行回调函数
+  nextTick(() => {
+    treeRef.value?.setCheckedKeys([])
+  })
+}
+// 更新弹窗的拦截,设置回显tree
+function updateCallBack(userInfo: any) {
   checkedKeysRef.value = mapRoleToPermission(userInfo.menuList)
   // nextTick在vue中的意思是：当dom更新后，再执行回调函数
   nextTick(() => {
     treeRef.value?.setCheckedKeys(checkedKeysRef.value)
   })
-})
+}
 </script>
 
 <style lang="less" scoped></style>

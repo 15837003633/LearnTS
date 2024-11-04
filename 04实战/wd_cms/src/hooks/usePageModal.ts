@@ -1,10 +1,11 @@
 import pageModal from '@/components/page-modal/page-modal.vue'
 import { ref } from 'vue'
 
-type UpdateCallBackFn = (data: any) => void
-function usePageModal(updateCallBack?: UpdateCallBackFn) {
+type CallBackFn = (data?: any) => void
+function usePageModal(newCallBack?: CallBackFn, updateCallBack?: CallBackFn) {
   const modalRef = ref<InstanceType<typeof pageModal>>()
   function newDataAction() {
+    if (newCallBack) newCallBack()
     modalRef.value?.setDialogVisible()
   }
 

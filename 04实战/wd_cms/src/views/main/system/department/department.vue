@@ -1,7 +1,7 @@
 <template>
   <div class="department">
     <page-search
-      :form-items="searchConfig.formItems"
+      :search-config="searchConfig"
       label-width="80"
       @query-action="searchQueryAction"
       @reset-action="searchResetAction"
