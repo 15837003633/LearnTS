@@ -18,6 +18,15 @@
             :label="item.label"
             :width="item.width"
           ></el-table-column>
+          <el-table-column v-else-if="item.type === 'image'" :width="item.width">
+            <template #default="scope">
+              <img
+                :src="scope.row[item.prop]"
+                alt=""
+                :style="{ width: '50px', height: '50px', margin: '0 auto', 'text-align': 'center' }"
+              />
+            </template>
+          </el-table-column>
           <!-- 日期 -->
           <el-table-column v-else-if="item.type == 'date'" v-bind="item">
             <template #default="scope">
