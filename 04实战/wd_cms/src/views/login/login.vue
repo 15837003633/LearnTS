@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <login-panel></login-panel>
+    <div class="login-panel"><login-panel></login-panel></div>
     <span class="tips">账号:coderwhy 密码:123456</span>
   </div>
 </template>
